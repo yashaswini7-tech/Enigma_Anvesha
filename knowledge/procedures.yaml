@@ -62,6 +62,18 @@ entries:
     source_url: "https://www.rbi.org.in/"
     verified: false
 
+  - id: stop_sip
+    applies_to: ["mutual_fund"]
+    stage: this_week
+    urgency: 1
+    when: {item_flag: still_debiting}
+    action: "Ask {institution} or its registrar to stop further SIP instalments, and tell the bank."
+    why: "New instalments keep moving money from the account into units that will later need transmission."
+    documents: ["Death certificate", "Folio number or the SIP debit line from the statement"]
+    source_name: "AMFI"
+    source_url: "https://www.amfiindia.com/"
+    verified: false
+
   - id: loan_talk_first
     applies_to: ["home_loan", "personal_loan", "loan", "credit_card"]
     stage: this_week
