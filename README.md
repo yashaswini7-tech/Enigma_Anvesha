@@ -59,8 +59,8 @@ All dependencies are open source under OSI-approved licences.
 ## Setup Instructions
 
 ```bash
-git clone https://github.com/yashaswini7-tech/Enigma_Anvesha.git
-cd Enigma_Anvesha
+git clone https://github.com/yashaswini7-tech/Enigma_PrettyChaos.git
+cd Enigma_PrettyChaos
 uv sync                                          # installs Python 3.11 deps from uv.lock
 uv run python -m anvesha.synth.persona           # writes the demo family to data/demo/
 uv run python eval/score.py --provider none      # rules-only metrics -> results/metrics.json
