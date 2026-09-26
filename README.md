@@ -114,4 +114,22 @@ Everything runs locally. Uploaded files are read in memory and never written to 
 
 ## AI Usage
 
-The code in this repository was written with Claude Code (Anthropic) during the hackathon, following the spec in `CLAUDE.md`. The team reviewed the output, ran the tests and made the design decisions recorded in `DECISIONS.md`. At runtime, a language model is optional: it is used only to classify transactions the rules cannot settle and to polish the wording of one letter paragraph. It never supplies facts.
+**The idea and the solution are the team's.** Team Pretty Chaos came up with the problem framing and the approach:
+- discovery from bank statements and the AIS
+- an evidence-linked inventory
+- a staged plan backed by a verified knowledge base
+- measured precision and recall
+
+The team wrote the full specification (`CLAUDE.md`): architecture, repository layout, rules, time-boxed build order and acceptance checkpoints. They also supplied starting boilerplate.
+
+**Claude Code (Anthropic) was the AI tool we used to carry out that plan.** It:
+- wrote the implementation, block by block, following the spec
+- orchestrated the build: at the end of every block it ran a local quality gate (`uv run ruff check . && uv run ruff format . && uv run pytest -q`), fixed failures, printed the checkpoint result, then committed and pushed with a descriptive message
+- checked knowledge-base entries against official sources and marked anything it could not verify as `verified: false`
+- recorded trade-offs in `DECISIONS.md`
+
+There is no hosted CI/CD pipeline (such as GitHub Actions) in this repository. The quality gate above was run locally at each block, and the commit history reflects those runs.
+
+The team reviewed the output and made the final calls on scope and trade-offs.
+
+**At runtime**, a language model is optional. It is used only to classify transactions the rules cannot settle and to polish the wording of one letter paragraph. It never supplies facts, and it only ever sees redacted text.
