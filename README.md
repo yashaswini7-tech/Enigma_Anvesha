@@ -5,7 +5,10 @@ Finding and closing a deceased person's financial life, starting from the eviden
 ## Team Name & Members
 
 - **Team name:** `<Team Name>`
-- **Members:** `<Members>`
+- **Members:**
+  - Yashaswini Patil
+  - Mahima Rai
+  - Aditi Bhosale
 
 ## Problem Statement
 
