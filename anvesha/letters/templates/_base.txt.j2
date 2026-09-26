@@ -1,0 +1,30 @@
+{{ sender_name or "[Your name]" }}
+{{ sender_address or "[Your address]" }}
+{{ today }}
+
+To
+{{ recipient }}
+
+Subject: {{ subject }}
+
+Dear Sir or Madam,
+
+{{ opening }}
+
+Details
+- Name of the deceased: {{ deceased or "[Name of the deceased]" }}
+- Date of death: {{ date_of_death or "[Date of death]" }}
+- {{ reference_label }}: {{ reference or "[Please fill in]" }}
+{% for line in evidence_lines %}- From the bank statement: {{ line }}
+{% endfor %}
+{% block request %}{% endblock %}
+
+{% if enclosures %}I enclose:
+{% for doc in enclosures %}- {{ doc }}
+{% endfor %}{% endif %}
+Please reply to me at the address above, or at {{ contact or "[phone / email]" }}.
+
+Yours faithfully,
+
+{{ sender_name or "[Your name]" }}
+{{ relationship or "[Relationship]" }} of the deceased

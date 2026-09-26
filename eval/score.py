@@ -110,7 +110,23 @@ def score(items: list[Item], truth: dict) -> dict:
     }
 
 
-def evaluate(provider: str) -> dict:
+def _llm_run(statement, ais, meta, truth, provider: str, model: str | None) -> dict:
+    dod = date.fromisoformat(meta["date_of_death"])
+    t0 = time.perf_counter()
+    try:
+        result = score(run(statement, ais, meta["bank"], dod, provider, model), truth)
+    except Exception as exc:  # the report should say why the LLM run is missing
+        result = {"error": f"{type(exc).__name__}: {exc}"}
+    result["seconds"] = round(time.perf_counter() - t0, 2)
+    result["provider"] = provider
+    result["model"] = model or (
+        config.OLLAMA_MODEL if provider == "ollama" else config.ANTHROPIC_MODEL
+    )
+    return result
+
+
+def evaluate(provider: str, models: list[str] | None = None) -> dict:
+    """Rules-only, then rules + LLM for the provider (and each extra Ollama model)."""
     statement, ais, meta, truth = load_demo()
     dod = date.fromisoformat(meta["date_of_death"])
     runs = {}
@@ -118,17 +134,10 @@ def evaluate(provider: str) -> dict:
     runs["rules_only"] = score(run(statement, ais, meta["bank"], dod, "none"), truth)
     runs["rules_only"]["seconds"] = round(time.perf_counter() - t0, 2)
     if provider != "none":
-        t0 = time.perf_counter()
-        try:
-            llm_items = run(statement, ais, meta["bank"], dod, provider)
-            runs["rules_plus_llm"] = score(llm_items, truth)
-        except Exception as exc:  # the report should say why the LLM run is missing
-            runs["rules_plus_llm"] = {"error": f"{type(exc).__name__}: {exc}"}
-        runs["rules_plus_llm"]["seconds"] = round(time.perf_counter() - t0, 2)
-        runs["rules_plus_llm"]["provider"] = provider
-        runs["rules_plus_llm"]["model"] = (
-            config.OLLAMA_MODEL if provider == "ollama" else config.ANTHROPIC_MODEL
-        )
+        models = models or [None]
+        for n, model in enumerate(models):
+            key = "rules_plus_llm" if n == 0 else f"rules_plus_llm__{model}"
+            runs[key] = _llm_run(statement, ais, meta, truth, provider, model)
     return {
         "generated_at": datetime.now().isoformat(timespec="seconds"),
         "persona": meta["name"],
@@ -147,13 +156,53 @@ def _summary(name: str, r: dict) -> str:
     )
 
 
+def metrics_markdown(metrics: dict) -> str:
+    lines = [
+        "| Run | Found | Recall | Precision | False positives | Missed | Closed SIP flagged |",
+        "|---|---|---|---|---|---|---|",
+    ]
+    for key, r in metrics["runs"].items():
+        name = "Rules only" if key == "rules_only" else "Rules + LLM"
+        if "provider" in r:
+            name += f" ({r['provider']}: `{r['model']}`)"
+        if "error" in r:
+            lines.append(f"| {name} | not available: {r['error']} | | | | | |")
+            continue
+        missed = ", ".join(f"{m['id']} {m['type']}" for m in r["missed"]) or "none"
+        flagged = all(c["flagged_possibly_closed"] for c in r["closed_items"])
+        lines.append(
+            f"| {name} | {r['true_positives']}/{r['ground_truth_items']} | {r['recall']} | "
+            f"{r['precision']} | {r['false_positives']} | {missed} | "
+            f"{'yes' if flagged else 'no'} |"
+        )
+    lines.append("")
+    lines.append(f"_Generated {metrics['generated_at']} by `eval/score.py`._")
+    return "\n".join(lines)
+
+
+def update_readme(metrics: dict, readme: Path = config.ROOT / "README.md") -> None:
+    if not readme.exists():
+        return
+    text = readme.read_text(encoding="utf-8")
+    start, end = "<!-- metrics:start -->", "<!-- metrics:end -->"
+    if start not in text or end not in text:
+        return
+    head, rest = text.split(start, 1)
+    _, tail = rest.split(end, 1)
+    readme.write_text(f"{head}{start}\n{metrics_markdown(metrics)}\n{end}{tail}", encoding="utf-8")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--provider", default=config.LLM_PROVIDER)
+    parser.add_argument(
+        "--models", nargs="*", help="Ollama models to compare; the first is the headline run."
+    )
     args = parser.parse_args()
-    metrics = evaluate(args.provider)
+    metrics = evaluate(args.provider, args.models)
     config.RESULTS_DIR.mkdir(exist_ok=True)
     config.METRICS_PATH.write_text(json.dumps(metrics, indent=2), encoding="utf-8")
+    update_readme(metrics)
     for name, r in metrics["runs"].items():
         print(_summary(name, r))
     print(f"written: {config.METRICS_PATH}")

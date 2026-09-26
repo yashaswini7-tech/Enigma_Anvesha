@@ -81,10 +81,10 @@ class AnthropicClient:
         return "".join(b.text for b in msg.content if b.type == "text")
 
 
-def get_client(provider: str | None = None) -> LLMClient | None:
+def get_client(provider: str | None = None, model: str | None = None) -> LLMClient | None:
     provider = provider or config.LLM_PROVIDER
     if provider == "ollama":
-        client: LLMClient = OllamaClient()
+        client: LLMClient = OllamaClient(model or config.OLLAMA_MODEL)
     elif provider == "anthropic":
         if not os.environ.get("ANTHROPIC_API_KEY"):
             return None

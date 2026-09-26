@@ -34,7 +34,7 @@ CONF_MAX = 0.97
 # --- LLM ---
 LLM_PROVIDER = os.environ.get("ANVESHA_LLM", "ollama")  # ollama | anthropic | none
 OLLAMA_URL = os.environ.get("OLLAMA_URL", "http://localhost:11434")
-OLLAMA_MODEL = os.environ.get("ANVESHA_OLLAMA_MODEL", "llama3.2:3b")
+OLLAMA_MODEL = os.environ.get("ANVESHA_OLLAMA_MODEL", "qwen2.5:7b")  # Apache-2.0 weights
 ANTHROPIC_MODEL = os.environ.get("ANVESHA_ANTHROPIC_MODEL", "claude-haiku-4-5-20251001")
 LLM_TIMEOUT_S = 120
 LLM_MIN_CONFIDENCE = 0.6

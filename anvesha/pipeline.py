@@ -14,12 +14,12 @@ from anvesha.ingest.statement import load_statement
 from anvesha.synth.persona import ensure_demo
 
 
-def llm_classifier_for(provider: str) -> SeriesClassifier | None:
+def llm_classifier_for(provider: str, model: str | None = None) -> SeriesClassifier | None:
     if provider == "none":
         return None
     from anvesha.discover.llm_classify import make_classifier
 
-    return make_classifier(provider)
+    return make_classifier(provider, model)
 
 
 def run(
@@ -28,8 +28,10 @@ def run(
     main_bank: str,
     date_of_death: date | None,
     provider: str = "none",
+    model: str | None = None,
 ) -> list[Item]:
-    return build_inventory(statement, ais, main_bank, date_of_death, llm_classifier_for(provider))
+    classifier = llm_classifier_for(provider, model)
+    return build_inventory(statement, ais, main_bank, date_of_death, classifier)
 
 
 def load_demo(out_dir: Path | None = None) -> tuple[pd.DataFrame, pd.DataFrame, dict, dict]:

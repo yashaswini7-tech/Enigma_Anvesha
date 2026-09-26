@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-26T11:16:33",
+  "generated_at": "2026-09-26T11:24:41",
   "persona": "Ramesh Kulkarni",
   "method": "Evidence-overlap match with same type family; see eval/score.py.",
   "runs": {
@@ -145,7 +145,7 @@
           "precision": null
         }
       },
-      "seconds": 0.22
+      "seconds": 0.19
     },
     "rules_plus_llm": {
       "precision": 1.0,
@@ -281,7 +281,7 @@
           "precision": 1.0
         }
       },
-      "seconds": 2.22,
+      "seconds": 16.52,
       "provider": "ollama",
       "model": "llama3.2:3b"
     }

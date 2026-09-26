@@ -114,8 +114,8 @@ def classify_with(client: LLMClient, series: Series, cache: dict | None = None) 
     return payload
 
 
-def make_classifier(provider: str):
-    client = get_client(provider)
+def make_classifier(provider: str, model: str | None = None):
+    client = get_client(provider, model)
     if client is None:
         raise RuntimeError(f"LLM provider '{provider}' is not available")
     cache = _load_cache()

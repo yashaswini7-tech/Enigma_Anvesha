@@ -16,11 +16,13 @@ from anvesha import config  # noqa: E402
 from anvesha.discover.inventory import TYPE_LABELS, Item, manual_item  # noqa: E402
 from anvesha.ingest.ais import load_ais  # noqa: E402
 from anvesha.ingest.statement import load_statement  # noqa: E402
+from anvesha.letters import draft  # noqa: E402
 from anvesha.llm import get_client  # noqa: E402
 from anvesha.pipeline import load_demo, run  # noqa: E402
 from anvesha.plan import intake  # noqa: E402
 from anvesha.plan.documents import build_checklist  # noqa: E402
 from anvesha.plan.engine import STAGES, build_plan, load_channels  # noqa: E402
+from anvesha.track import store  # noqa: E402
 
 st.set_page_config(page_title="Anvesha", layout="wide")
 
@@ -219,7 +221,7 @@ def item_card(item: Item) -> None:
             st.caption("Entered by you. No statement evidence.")
         with st.expander(f"Evidence ({len(item.evidence)} line(s)) and reasoning"):
             st.write(item.rationale)
-            st.dataframe(_evidence_frame(item), hide_index=True, use_container_width=True)
+            st.dataframe(_evidence_frame(item), hide_index=True, width="stretch")
 
 
 def tab_found() -> None:
@@ -329,6 +331,12 @@ def tab_missing() -> None:
 
 
 # ---------------------------------------------------------------------------- Metrics
+def _run_name(key: str, r: dict) -> str:
+    if key == "rules_only":
+        return "Rules only"
+    return f"Rules + language model ({r.get('provider')}: {r.get('model')})"
+
+
 def tab_metrics() -> None:
     st.header("How well it works")
     st.write(
@@ -342,17 +350,20 @@ def tab_metrics() -> None:
         return
     metrics = json.loads(config.METRICS_PATH.read_text(encoding="utf-8"))
     rows = []
-    names = {"rules_only": "Rules only", "rules_plus_llm": "Rules + language model"}
     for key, r in metrics["runs"].items():
         if "error" in r:
             rows.append(
-                {"Run": names.get(key, key), "Recall": None, "Precision": None, "Note": r["error"]}
+                {
+                    "Run": _run_name(key, r),
+                    "Recall": None,
+                    "Precision": None,
+                    "Note": r["error"],
+                }
             )
             continue
-        model = f" ({r['provider']}: {r['model']})" if "provider" in r else ""
         rows.append(
             {
-                "Run": names.get(key, key) + model,
+                "Run": _run_name(key, r),
                 "Found": f"{r['true_positives']} of {r['ground_truth_items']}",
                 "Recall": r["recall"],
                 "Precision": r["precision"],
@@ -361,12 +372,14 @@ def tab_metrics() -> None:
                 "Closed SIP flagged": all(c["flagged_possibly_closed"] for c in r["closed_items"]),
             }
         )
-    st.dataframe(pd.DataFrame(rows), hide_index=True, use_container_width=True)
+    st.dataframe(pd.DataFrame(rows), hide_index=True, width="stretch")
     for key, r in metrics["runs"].items():
         if "per_type" not in r:
             continue
-        with st.expander(f"Per item type: {names.get(key, key)}"):
-            st.dataframe(pd.DataFrame(r["per_type"]).T, use_container_width=True)
+        with st.expander(
+            f"Per item type: {('Rules only' if key == 'rules_only' else 'Rules + language model')}"
+        ):
+            st.dataframe(pd.DataFrame(r["per_type"]).T, width="stretch")
     st.caption(
         "Honest limits: the synthetic statement was written by the same team as the rules. The "
         "language-model prompt was adjusted while looking at the two hard items, so the "
@@ -374,9 +387,94 @@ def tab_metrics() -> None:
     )
 
 
-def tab_placeholder(name: str) -> None:
-    st.header(name)
-    st.write("This part is not built yet.")
+# ----------------------------------------------------------------------------- Letters
+def tab_letters() -> None:
+    ss = st.session_state
+    st.header("Letters")
+    items = [i for i in all_items() if i.status != "possibly_closed"]
+    if not items:
+        st.write("Letters appear after we have read a statement.")
+        return
+    item = st.selectbox("Letter for", items, format_func=lambda i: f"{i.label} — {i.institution}")
+    kind = draft.letter_kind(item)
+    st.caption(
+        {
+            "lender": "Intimation to a lender. It asks about insurance cover and does not stop "
+            "payments.",
+            "cancellation": "Cancellation of a subscription.",
+            "intimation": "Intimation of death and request for the claim process.",
+        }[kind]
+    )
+    with st.expander("Your details for the letter (kept only in this session)"):
+        sender = draft.Sender(
+            name=st.text_input("Your name", key="sender_name"),
+            address=st.text_area("Your address", key="sender_address"),
+            contact=st.text_input("Phone or email for replies", key="sender_contact"),
+        )
+    opening_key = f"opening::{item.id}"
+    ss.setdefault(opening_key, draft.default_opening(item, ss["circ"]))
+    if ss["provider_used"] != "none" and st.button("Polish the wording (facts stay the same)"):
+        client = get_client(ss["provider_used"])
+        if client is not None:
+            with st.spinner("Asking the local model..."):
+                ss[opening_key] = draft.polish_opening(client, ss[opening_key])
+    text = draft.render(item, ss["circ"], sender, opening=ss[opening_key])
+    text = st.text_area("Preview (you can edit it)", text, height=460, key=f"letter::{item.id}")
+    fname = f"letter_{item.institution.replace(' ', '_').lower()}"
+    col1, col2 = st.columns(2)
+    col1.download_button(
+        "Download .docx",
+        draft.to_docx(text),
+        f"{fname}.docx",
+        mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    )
+    col2.download_button("Download .txt", text, f"{fname}.txt", mime="text/plain")
+    st.caption(
+        "Fill in the reference number before sending. The statement lines are shown only to "
+        "help the institution find the account."
+    )
+
+
+# ----------------------------------------------------------------------------- Tracker
+def tab_tracker() -> None:
+    ss = st.session_state
+    st.header("Tracker")
+    items = all_items()
+    if items:
+        store.sync_items(items)
+    rows = store.all_rows()
+    if not rows:
+        st.write("Nothing to track yet.")
+    for row in rows:
+        cols = st.columns([3, 2, 3])
+        cols[0].write(f"{row['label']} — {row['institution']}")
+        status = cols[1].selectbox(
+            "Status",
+            store.STATUSES,
+            index=store.STATUSES.index(row["status"]),
+            key=f"track::{row['item_key']}",
+            label_visibility="collapsed",
+        )
+        note = cols[2].text_input(
+            "Note",
+            row["note"],
+            key=f"note::{row['item_key']}",
+            label_visibility="collapsed",
+            placeholder="Note (optional)",
+        )
+        if status != row["status"] or note != row["note"]:
+            store.set_status(row["item_key"], status, note)
+    st.subheader("Delete all our data")
+    st.write(
+        "Uploaded files are read in memory and never saved. This deletes the tracker file, the "
+        "language-model cache and everything in this session."
+    )
+    if st.button("Delete all our data", type="primary"):
+        removed = store.delete_all_data()
+        for key in list(ss.keys()):
+            del ss[key]
+        _state()
+        st.success(f"Deleted. {len(removed)} file(s) removed and the session was cleared.")
 
 
 def main() -> None:
@@ -404,11 +502,11 @@ def main() -> None:
     with tabs[3]:
         tab_documents()
     with tabs[4]:
-        tab_placeholder("Letters")
+        tab_letters()
     with tabs[5]:
         tab_missing()
     with tabs[6]:
-        tab_placeholder("Tracker")
+        tab_tracker()
     with tabs[7]:
         tab_metrics()
 
