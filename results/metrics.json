@@ -1,0 +1,151 @@
+{
+  "generated_at": "2026-09-26T11:09:31",
+  "persona": "Ramesh Kulkarni",
+  "method": "Evidence-overlap match with same type family; see eval/score.py.",
+  "runs": {
+    "rules_only": {
+      "precision": 1.0,
+      "recall": 0.857,
+      "true_positives": 12,
+      "false_positives": 0,
+      "ground_truth_items": 14,
+      "exact_type_accuracy": 1.0,
+      "found": [
+        "GT01",
+        "GT03",
+        "GT04",
+        "GT05",
+        "GT06",
+        "GT07",
+        "GT08",
+        "GT09",
+        "GT10",
+        "GT11",
+        "GT12",
+        "GT13"
+      ],
+      "missed": [
+        {
+          "id": "GT02",
+          "type": "term_insurance",
+          "institution": "PNB MetLife",
+          "hard": true
+        },
+        {
+          "id": "GT14",
+          "type": "subscription",
+          "institution": "Powerzone Club",
+          "hard": true
+        }
+      ],
+      "false_positive_items": [],
+      "found_by_llm": [],
+      "closed_items": [
+        {
+          "id": "CL01",
+          "flagged_possibly_closed": true
+        }
+      ],
+      "items_debiting_after_death": 6,
+      "per_type": {
+        "cloud_storage": {
+          "truth": 1,
+          "found": 1,
+          "predicted": 1,
+          "correct": 1,
+          "recall": 1.0,
+          "precision": 1.0
+        },
+        "demat_account": {
+          "truth": 1,
+          "found": 1,
+          "predicted": 1,
+          "correct": 1,
+          "recall": 1.0,
+          "precision": 1.0
+        },
+        "epf": {
+          "truth": 1,
+          "found": 1,
+          "predicted": 1,
+          "correct": 1,
+          "recall": 1.0,
+          "precision": 1.0
+        },
+        "fixed_deposit": {
+          "truth": 1,
+          "found": 1,
+          "predicted": 1,
+          "correct": 1,
+          "recall": 1.0,
+          "precision": 1.0
+        },
+        "health_insurance": {
+          "truth": 1,
+          "found": 1,
+          "predicted": 1,
+          "correct": 1,
+          "recall": 1.0,
+          "precision": 1.0
+        },
+        "home_loan": {
+          "truth": 1,
+          "found": 1,
+          "predicted": 1,
+          "correct": 1,
+          "recall": 1.0,
+          "precision": 1.0
+        },
+        "life_insurance": {
+          "truth": 1,
+          "found": 1,
+          "predicted": 1,
+          "correct": 1,
+          "recall": 1.0,
+          "precision": 1.0
+        },
+        "mutual_fund": {
+          "truth": 2,
+          "found": 2,
+          "predicted": 3,
+          "correct": 2,
+          "recall": 1.0,
+          "precision": 0.667
+        },
+        "personal_loan": {
+          "truth": 1,
+          "found": 1,
+          "predicted": 1,
+          "correct": 1,
+          "recall": 1.0,
+          "precision": 1.0
+        },
+        "ppf": {
+          "truth": 1,
+          "found": 1,
+          "predicted": 1,
+          "correct": 1,
+          "recall": 1.0,
+          "precision": 1.0
+        },
+        "subscription": {
+          "truth": 2,
+          "found": 1,
+          "predicted": 1,
+          "correct": 1,
+          "recall": 0.5,
+          "precision": 1.0
+        },
+        "term_insurance": {
+          "truth": 1,
+          "found": 0,
+          "predicted": 0,
+          "correct": 0,
+          "recall": 0.0,
+          "precision": null
+        }
+      },
+      "seconds": 0.17
+    }
+  }
+}

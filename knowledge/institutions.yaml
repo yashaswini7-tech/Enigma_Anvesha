@@ -1,0 +1,66 @@
+# Institution names and the narration aliases that identify them.
+# Names are used only as recognisable categories to read statement narrations.
+# kind: insurer | bank | nbfc | housing_finance | amc | registrar | platform
+# default_type: the item type assumed when only the institution is recognised.
+# Aliases are matched on whole words after narrations are upper-cased and
+# punctuation is replaced by spaces.
+
+institutions:
+  # --- Life insurers ---
+  - {name: LIC, kind: insurer, default_type: life_insurance, aliases: ["LIC OF INDIA", "LIC", "LICI", "LIFE INSURANCE CORPORATION"]}
+  - {name: HDFC Life, kind: insurer, default_type: life_insurance, aliases: ["HDFC LIFE", "HDFCLIFE", "HDFC STANDARD LIFE"]}
+  - {name: SBI Life, kind: insurer, default_type: life_insurance, aliases: ["SBI LIFE", "SBILIFE"]}
+  - {name: ICICI Prudential Life, kind: insurer, default_type: life_insurance, aliases: ["ICICI PRU LIFE", "ICICI PRUDENTIAL LIFE", "IPRU LIFE"]}
+  - {name: Max Life, kind: insurer, default_type: life_insurance, aliases: ["MAX LIFE", "AXIS MAX LIFE"]}
+  - {name: Tata AIA Life, kind: insurer, default_type: life_insurance, aliases: ["TATA AIA"]}
+  - {name: Bajaj Allianz Life, kind: insurer, default_type: life_insurance, aliases: ["BAJAJ ALLIANZ LIFE"]}
+  - {name: Kotak Life, kind: insurer, default_type: life_insurance, aliases: ["KOTAK LIFE", "KOTAK MAHINDRA LIFE"]}
+  - {name: Aditya Birla Sun Life Insurance, kind: insurer, default_type: life_insurance, aliases: ["ABSLI", "BIRLA SUN LIFE INS"]}
+  # --- Health and general insurers ---
+  - {name: Niva Bupa, kind: insurer, default_type: health_insurance, aliases: ["NIVA BUPA", "MAX BUPA"]}
+  - {name: Star Health, kind: insurer, default_type: health_insurance, aliases: ["STAR HEALTH"]}
+  - {name: Care Health, kind: insurer, default_type: health_insurance, aliases: ["CARE HEALTH", "RELIGARE HEALTH"]}
+  - {name: HDFC ERGO, kind: insurer, default_type: health_insurance, aliases: ["HDFC ERGO"]}
+  - {name: ICICI Lombard, kind: insurer, default_type: health_insurance, aliases: ["ICICI LOMBARD"]}
+  - {name: New India Assurance, kind: insurer, default_type: health_insurance, aliases: ["NEW INDIA ASSURANCE", "NIACL"]}
+  # --- Banks ---
+  - {name: State Bank of India, kind: bank, default_type: bank_account, aliases: ["STATE BANK OF INDIA", "SBI"]}
+  - {name: HDFC Bank, kind: bank, default_type: bank_account, aliases: ["HDFC BANK", "HDFC BANK LTD"]}
+  - {name: ICICI Bank, kind: bank, default_type: bank_account, aliases: ["ICICI BANK"]}
+  - {name: Axis Bank, kind: bank, default_type: bank_account, aliases: ["AXIS BANK"]}
+  - {name: Kotak Mahindra Bank, kind: bank, default_type: bank_account, aliases: ["KOTAK MAHINDRA BANK", "KOTAK BANK"]}
+  - {name: Bank of Baroda, kind: bank, default_type: bank_account, aliases: ["BANK OF BARODA", "BOB"]}
+  - {name: Punjab National Bank, kind: bank, default_type: bank_account, aliases: ["PUNJAB NATIONAL BANK"]}
+  - {name: Canara Bank, kind: bank, default_type: bank_account, aliases: ["CANARA BANK"]}
+  - {name: Union Bank of India, kind: bank, default_type: bank_account, aliases: ["UNION BANK OF INDIA"]}
+  - {name: Bank of Maharashtra, kind: bank, default_type: bank_account, aliases: ["BANK OF MAHARASHTRA"]}
+  # --- Lenders (NBFC / housing finance) ---
+  - {name: Bajaj Finance, kind: nbfc, default_type: personal_loan, aliases: ["BAJAJ FINANCE", "BAJAJ FIN", "BAJAJFINANCE"]}
+  - {name: Tata Capital, kind: nbfc, default_type: personal_loan, aliases: ["TATA CAPITAL"]}
+  - {name: Aditya Birla Finance, kind: nbfc, default_type: personal_loan, aliases: ["ADITYA BIRLA FINANCE"]}
+  - {name: Home Credit, kind: nbfc, default_type: personal_loan, aliases: ["HOME CREDIT"]}
+  - {name: LIC Housing Finance, kind: housing_finance, default_type: home_loan, aliases: ["LIC HOUSING", "LICHFL"]}
+  - {name: PNB Housing Finance, kind: housing_finance, default_type: home_loan, aliases: ["PNB HOUSING", "PNBHFL"]}
+  # --- Mutual fund AMCs ---
+  - {name: Axis Mutual Fund, kind: amc, default_type: mutual_fund, aliases: ["AXIS MUTUAL FUND", "AXIS MF"]}
+  - {name: Mirae Asset Mutual Fund, kind: amc, default_type: mutual_fund, aliases: ["MIRAE ASSET MUTUAL FUND", "MIRAE ASSET MF", "MIRAE ASSET", "MIRAE"]}
+  - {name: ICICI Prudential Mutual Fund, kind: amc, default_type: mutual_fund, aliases: ["ICICI PRUDENTIAL MUTUAL FUND", "ICICI PRU MF", "ICICI PRUDENTIAL MF"]}
+  - {name: SBI Mutual Fund, kind: amc, default_type: mutual_fund, aliases: ["SBI MUTUAL FUND", "SBI MF"]}
+  - {name: HDFC Mutual Fund, kind: amc, default_type: mutual_fund, aliases: ["HDFC MUTUAL FUND", "HDFC MF"]}
+  - {name: Nippon India Mutual Fund, kind: amc, default_type: mutual_fund, aliases: ["NIPPON INDIA MF", "NIPPON INDIA MUTUAL FUND"]}
+  - {name: Parag Parikh Mutual Fund, kind: amc, default_type: mutual_fund, aliases: ["PPFAS", "PARAG PARIKH"]}
+  - {name: Kotak Mutual Fund, kind: amc, default_type: mutual_fund, aliases: ["KOTAK MUTUAL FUND", "KOTAK MF"]}
+  # --- Registrars (RTAs) ---
+  - {name: CAMS, kind: registrar, default_type: mutual_fund, aliases: ["CAMS", "COMPUTER AGE MANAGEMENT"]}
+  - {name: KFintech, kind: registrar, default_type: mutual_fund, aliases: ["KFINTECH", "KFIN", "KARVY"]}
+  # --- Subscription platforms ---
+  - {name: Netflix, kind: platform, default_type: subscription, aliases: ["NETFLIX", "NETFLIX COM"]}
+  - {name: Amazon Prime, kind: platform, default_type: subscription, aliases: ["AMAZON PRIME", "PRIME VIDEO"]}
+  - {name: Spotify, kind: platform, default_type: subscription, aliases: ["SPOTIFY"]}
+  - {name: JioHotstar, kind: platform, default_type: subscription, aliases: ["HOTSTAR", "JIOHOTSTAR"]}
+  - {name: YouTube Premium, kind: platform, default_type: subscription, aliases: ["YOUTUBE PREMIUM", "YOUTUBEPREMIUM"]}
+  - {name: Cult.fit, kind: platform, default_type: subscription, aliases: ["CULT FIT", "CULTFIT", "CUREFIT"]}
+  - {name: Google One, kind: platform, default_type: cloud_storage, aliases: ["GOOGLE ONE", "GOOGLE STORAGE"]}
+  - {name: iCloud, kind: platform, default_type: cloud_storage, aliases: ["ICLOUD"]}
+  - {name: Dropbox, kind: platform, default_type: cloud_storage, aliases: ["DROPBOX"]}
+  - {name: Microsoft 365, kind: platform, default_type: cloud_storage, aliases: ["MICROSOFT 365", "MSFT 365"]}
