@@ -6,3 +6,8 @@
 - **Default local model is `llama3.2:3b`.** It was already installed in Ollama on the build machine. `qwen2.5:3b` works too through `ANVESHA_OLLAMA_MODEL`.
 - **PDF statements are parsed line by line with a regex** over pdfplumber text rather than with table extraction. This is robust for our generated layout. Real bank PDFs vary, which is noted under Limitations.
 - **Synthetic AIS uses descriptive categories** ("Interest from deposit", "Dividend") rather than official information codes. We did not want to invent codes we had not verified.
+- **LLM prompt was tuned on the demo's two hard items. Treat the rules+LLM figure as optimistic.** The first prompt got the gym right but labelled `PNBMET TRM` a credit card (13/14, one false positive). We made two general changes: a note that card bills vary while premiums, EMIs, SIPs and subscriptions are fixed, and asking for the rationale before the type. After those it scored 14/14. Both changes were made while looking at the same two examples we score on, so this is not a held-out result.
+- **LLM output is capped at confidence 0.85** and must use a known type. Low-confidence or malformed output is dropped. `not_financial_item` becomes an explicit ignore.
+- **LLM cache lives in `data/`** (gitignored), not `results/`. It holds only redacted prompts, but it can be deleted with the family's data.
+- **Redaction is enforced inside `llm.py`,** not only by callers, so no code path can send an unmasked prompt.
+- **KB entries without a checkable official page are `verified: false`.** This covers the loan, subscription, phone-number and death-certificate-registrar steps. The rupee thresholds for simplified bank and demat claims are deliberately left out: sources disagreed or we could not confirm them.

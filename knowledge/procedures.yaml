@@ -1,0 +1,238 @@
+# Procedures the plan engine may cite. Every entry carries an official source_url and a
+# verified flag. verified: true means the wording below was checked against that page on
+# checked_on. verified: false means we could not check it in time: the UI shows
+# "confirm with the institution" next to it.
+#
+# Fields
+#   applies_to: item types this entry is used for ("*" = once per plan, not per item)
+#   stage: this_week | first_month | months_2_6
+#   urgency: 1 (most urgent) .. 3
+#   when: optional conditions from the intake (nominee, joint, will, dispute, minors, ...)
+#   action: short instruction. {institution} is filled from the inventory item.
+#   why: one sentence on why the step matters.
+#   documents: what to have ready.
+
+checked_on: "2026-09-26"
+
+entries:
+  # ---------------------------------------------------------------- whole-estate steps
+  - id: death_certificate
+    applies_to: ["*"]
+    stage: this_week
+    urgency: 1
+    action: "Get certified copies of the death certificate from the registrar where the death was registered."
+    why: "Almost every institution asks for a copy. Asking for enough copies at once saves weeks."
+    documents: ["Hospital or cremation/burial record used for registration", "ID of the person applying"]
+    source_name: "Civil Registration System, Office of the Registrar General of India"
+    source_url: "https://crsorgi.gov.in/"
+    verified: false
+
+  - id: secure_documents
+    applies_to: ["*"]
+    stage: this_week
+    urgency: 1
+    action: "Collect and keep safe the original policy bonds, passbooks, loan letters, PAN card, Aadhaar, will and property papers."
+    why: "Claims ask for originals or certified copies. Losing one can add months."
+    documents: []
+    source_name: "RBI (Settlement of Claims in respect of Deceased Customers of Banks) Directions, 2025"
+    source_url: "https://www.rbi.org.in/Scripts/NotificationUser.aspx?Id=12901"
+    verified: false
+
+  - id: lawyer_needed
+    applies_to: ["*"]
+    stage: this_week
+    urgency: 1
+    when: {any_of: [dispute, minors, no_will_multiple_heirs, property]}
+    action: "Speak to a lawyer before filing claims."
+    why: "Disputes, minor heirs, several heirs without a will, or property usually need court documents or legal advice. This tool cannot give legal advice."
+    documents: ["The inventory from this tool", "The will, if any", "List of legal heirs"]
+    source_name: "Indian Succession Act, 1925 (India Code)"
+    source_url: "https://www.indiacode.nic.in/handle/123456789/2385"
+    verified: false
+
+  - id: stop_subscription_debits
+    applies_to: ["subscription", "cloud_storage"]
+    stage: this_week
+    urgency: 1
+    when: {item_flag: still_debiting}
+    action: "Ask {institution} and the bank to stop the recurring charge. Save any data you need first."
+    why: "These charges keep reducing the account balance that belongs to the heirs."
+    documents: ["Death certificate", "Last statement showing the charge"]
+    source_name: "Reserve Bank of India"
+    source_url: "https://www.rbi.org.in/"
+    verified: false
+
+  - id: loan_talk_first
+    applies_to: ["home_loan", "personal_loan", "loan", "credit_card"]
+    stage: this_week
+    urgency: 1
+    action: "Inform {institution} in writing. Ask for the outstanding amount and whether the loan carried insurance cover. Do not stop EMIs on your own."
+    why: "Some loans are covered by insurance that pays off the balance. Missed EMIs can add charges and affect the co-borrower, so talk to the lender first."
+    documents: ["Death certificate", "Loan account number or loan letter"]
+    source_name: "Reserve Bank of India"
+    source_url: "https://www.rbi.org.in/"
+    verified: false
+
+  - id: income_tax_legal_heir
+    applies_to: ["*"]
+    stage: months_2_6
+    urgency: 2
+    action: "Register as the legal heir of the deceased on the income tax e-filing portal, then file the return for income earned up to the date of death."
+    why: "The legal representative is treated as the assessee for the deceased. Registration also gives access to the deceased's AIS, which reveals more accounts."
+    documents: ["Copy of PAN card of the deceased", "Copy of death certificate", "Copy of legal heir proof", "Letter of indemnity (optional)"]
+    source_name: "Income Tax Department - Register as Legal Heir (user manual and FAQs)"
+    source_url: "https://www.incometax.gov.in/iec/foportal/help/RegisterasLegalHeirUserManual"
+    verified: true
+
+  - id: legal_heir_documents
+    applies_to: ["*"]
+    stage: months_2_6
+    urgency: 2
+    when: {any_of: [no_nominee_items]}
+    action: "For items without a nominee or survivor, find out which legal document each institution needs: succession certificate, legal heir certificate, probate or letter of administration. Legal heir certificates are issued by state authorities and the process varies by state."
+    why: "Without a nominee, institutions pay legal heirs only after they establish who the heirs are."
+    documents: ["Death certificate", "List of legal heirs with ID", "Will, if any"]
+    source_name: "RBI (Settlement of Claims in respect of Deceased Customers of Banks) Directions, 2025"
+    source_url: "https://www.rbi.org.in/Scripts/NotificationUser.aspx?Id=12901"
+    verified: true
+
+  - id: digital_phone
+    applies_to: ["*"]
+    stage: first_month
+    urgency: 2
+    action: "Keep the deceased's mobile number active until bank, insurer and email accounts are dealt with."
+    why: "One-time passwords for many accounts go to that number."
+    documents: []
+    source_name: "Reserve Bank of India"
+    source_url: "https://www.rbi.org.in/"
+    verified: false
+
+  # ---------------------------------------------------------------- bank deposits
+  - id: bank_claim_nominee
+    applies_to: ["bank_account", "fixed_deposit", "main_account"]
+    stage: first_month
+    urgency: 2
+    when: {nominee_or_survivor: true}
+    action: "Inform {institution} and file the claim as nominee or survivor. The claim can be lodged at any branch."
+    why: "With a nominee or survivor, the bank must not insist on a succession certificate or indemnity bond, whatever the amount."
+    documents: ["Claim form (Annex I-B of the RBI directions, from the bank)", "Death certificate", "Officially valid document (ID and address) of the claimant"]
+    note: "The bank should settle within 15 calendar days of receiving all required documents. A term deposit can be closed early on death without a penalty."
+    source_name: "RBI (Settlement of Claims in respect of Deceased Customers of Banks) Directions, 2025"
+    source_url: "https://www.rbi.org.in/Scripts/NotificationUser.aspx?Id=12901"
+    verified: true
+
+  - id: bank_claim_no_nominee
+    applies_to: ["bank_account", "fixed_deposit", "main_account"]
+    stage: months_2_6
+    urgency: 2
+    when: {nominee_or_survivor: false}
+    action: "Inform {institution} now. Ask whether the claim falls under its simplified procedure and which documents it needs."
+    why: "Without a nominee, the bank uses a simplified procedure up to a threshold set in the RBI directions, and asks for legal documents above it."
+    documents: ["Claim form (from the bank)", "Death certificate", "ID and address proof of the claimants", "Letter of disclaimer/no objection from non-claimant legal heirs, if applicable", "Succession certificate, probate or letter of administration where the bank asks for it"]
+    note: "The bank should settle within 15 calendar days of receiving all required documents."
+    source_name: "RBI (Settlement of Claims in respect of Deceased Customers of Banks) Directions, 2025"
+    source_url: "https://www.rbi.org.in/Scripts/NotificationUser.aspx?Id=12901"
+    verified: true
+
+  # ---------------------------------------------------------------- insurance
+  - id: life_claim
+    applies_to: ["life_insurance", "term_insurance"]
+    stage: first_month
+    urgency: 1
+    action: "Send a death claim intimation to {institution} as early as possible, then submit the claim."
+    why: "The claim is paid to the nominee or legal heir. Early intimation starts the insurer's process."
+    documents: ["Death certificate", "The primary claim documents listed in the policy", "Policy number (from the policy bond or statement)"]
+    source_name: "IRDAI Policyholder portal - How to make a claim (Life)"
+    source_url: "https://policyholder.gov.in/en/how-to-make-a-claim-life"
+    verified: true
+
+  - id: health_policy
+    applies_to: ["health_insurance"]
+    stage: first_month
+    urgency: 2
+    action: "Inform {institution}. Ask about any pending hospital claim and about continuing cover for other family members on the policy."
+    why: "Family members may lose cover at renewal if the insurer is not told."
+    documents: ["Death certificate", "Policy number"]
+    source_name: "IRDAI Policyholder portal"
+    source_url: "https://policyholder.gov.in/"
+    verified: false
+
+  # ---------------------------------------------------------------- market investments
+  - id: mf_transmission
+    applies_to: ["mutual_fund"]
+    stage: months_2_6
+    urgency: 2
+    action: "Ask {institution} or its registrar to transmit the units. Use Form T3 as nominee or legal heir, Form T2 if the deceased was the first holder, or Form T1 to delete a deceased joint holder. Ask them to stop any running SIP."
+    why: "Units must be transmitted before they can be redeemed."
+    documents: ["Transmission request form (T1 / T2 / T3)", "Death certificate", "KYC of the claimant", "For legal heirs: legal heirship certificate with indemnity bond and no-objection from other heirs, or a registered will with indemnity bond"]
+    source_name: "AMFI Best Practices Guidelines Circular No. 110/2023-24 (Transmission of Units), issued on SEBI's advice"
+    source_url: "https://www.amfiindia.com/Themes/Theme1/downloads/circulars/SEBI/CU149-AMFI%20BP%20cir%20110%20dt.%2031-Jan-24.pdf"
+    verified: true
+
+  - id: demat_transmission
+    applies_to: ["demat_account"]
+    stage: months_2_6
+    urgency: 2
+    action: "Find the depository participant (DP) that holds the demat account, then apply for transmission of the shares."
+    why: "Shares stay frozen in the deceased's name until they are transmitted."
+    documents: ["Transmission form", "Copy of the death certificate (certified for a nominee, notarised otherwise)", "Without a nominee: succession certificate, court order, probate or letter of administration. A simplified document set applies below a value limit set by the depository."]
+    source_name: "NSDL - Transmission of Securities"
+    source_url: "https://nsdl.com/services/trans"
+    verified: true
+
+  # ---------------------------------------------------------------- retirement savings
+  - id: epf_claim
+    applies_to: ["epf"]
+    stage: months_2_6
+    urgency: 2
+    action: "Ask the employer ({institution}) for the UAN and help with the EPF death claim: Form 20 for the PF balance, Form 10D for pension and Form 5(IF) for EDLI insurance."
+    why: "EPF has three separate benefits on death: the provident fund, the pension and the linked insurance."
+    documents: ["Death certificate", "Form 20, Form 10D and Form 5(IF)", "Bank details of the claimants"]
+    source_name: "EPFO Citizens' Charter"
+    source_url: "https://pmvbry-cdn.epfindia.gov.in/wp-content/uploads/2025/11/CitizenCharter.pdf"
+    verified: true
+
+  - id: employer_dues
+    applies_to: ["epf"]
+    stage: first_month
+    urgency: 2
+    action: "Write to the employer ({institution}) about final salary, leave encashment, gratuity and any group insurance."
+    why: "Employers often hold dues and group cover that the family does not know about."
+    documents: ["Death certificate", "Employee ID if known"]
+    source_name: "EPFO"
+    source_url: "https://www.epfindia.gov.in/"
+    verified: false
+
+  - id: ppf_claim
+    applies_to: ["ppf"]
+    stage: months_2_6
+    urgency: 3
+    action: "Apply to the account office ({institution}) to close the PPF account and pay the nominee or legal heirs, using Form G."
+    why: "A PPF account does not continue after the subscriber's death. The balance goes to the nominee or legal heirs."
+    documents: ["Form G", "Death certificate", "ID of the claimant"]
+    source_name: "National Savings Institute - PPF Form G"
+    source_url: "http://www.nsiindia.gov.in/writereaddata/FileUploads/formG.pdf"
+    verified: true
+
+  # ---------------------------------------------------------------- digital
+  - id: google_account
+    applies_to: ["cloud_storage"]
+    stage: first_month
+    urgency: 2
+    action: "Download any photos or files the family needs, then use the provider's deceased-user process to close the account or request data."
+    why: "The provider will not give out passwords. Data cannot be requested after the account is closed."
+    documents: ["Death certificate", "ID of the requester"]
+    source_name: "Google Account Help - Submit a request regarding a deceased user's account"
+    source_url: "https://support.google.com/accounts/troubleshooter/6357590"
+    verified: true
+
+  - id: cancel_subscription
+    applies_to: ["subscription"]
+    stage: first_month
+    urgency: 2
+    action: "Send a cancellation letter to {institution} and ask for a refund of charges taken after the date of death."
+    why: "Stopping at the bank may not close the contract. A written cancellation does."
+    documents: ["Death certificate", "Statement lines showing the charges"]
+    source_name: "Reserve Bank of India"
+    source_url: "https://www.rbi.org.in/"
+    verified: false

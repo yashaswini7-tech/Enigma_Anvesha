@@ -11,7 +11,7 @@ RESULTS_DIR = ROOT / "results"
 DEMO_DIR = ROOT / "data" / "demo"
 DB_PATH = Path(os.environ.get("ANVESHA_DB", ROOT / "data" / "anvesha.db"))
 METRICS_PATH = RESULTS_DIR / "metrics.json"
-LLM_CACHE_PATH = RESULTS_DIR / "llm_cache.json"
+LLM_CACHE_PATH = ROOT / "data" / "llm_cache.json"  # deleted with "delete all our data"
 
 # --- Recurring-series detection ---
 AMOUNT_TOLERANCE = 0.05  # +/- 5% of the series median

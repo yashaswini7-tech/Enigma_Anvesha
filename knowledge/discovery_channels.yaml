@@ -1,0 +1,86 @@
+# Official channels for finding what the statement and AIS cannot show.
+# verified: true = checked against the source_url on checked_on.
+
+checked_on: "2026-09-26"
+
+channels:
+  - id: udgam
+    name: "UDGAM (Unclaimed Deposits - Gateway to Access inforMation), RBI"
+    finds: ["bank_account", "fixed_deposit"]
+    what: "Search unclaimed deposits across many banks in one place. The claim itself is made to the bank shown in the result."
+    have_ready: ["Name of the deceased as in bank records", "Identity details the portal asks for, such as PAN or date of birth"]
+    url: "https://udgam.rbi.org.in/unclaimed-deposits/"
+    source_url: "https://www.rbi.org.in/commonman/english/scripts/FAQs.aspx?Id=3579"
+    verified: true
+
+  - id: bima_bharosa_unclaimed
+    name: "Unclaimed amount query, IRDAI Bima Bharosa"
+    finds: ["life_insurance", "term_insurance", "health_insurance"]
+    what: "Search unclaimed policy amounts at up to five insurers at a time."
+    have_ready: ["Name", "Date of birth", "PAN", "Mobile number", "Policy numbers, if known"]
+    url: "https://bimabharosa.irdai.gov.in/Home/UnclaimedAmountsQuery"
+    source_url: "https://bimabharosa.irdai.gov.in/Home/UnclaimedAmount"
+    verified: true
+
+  - id: insurer_unclaimed_pages
+    name: "Unclaimed amounts page on each insurer's website"
+    finds: ["life_insurance", "term_insurance", "health_insurance"]
+    what: "Insurers publish a search for unclaimed amounts of policyholders under IRDAI rules. Check the insurers the family has heard of."
+    have_ready: ["Name", "Date of birth", "PAN or policy number"]
+    url: "https://irdai.gov.in/document-detail?documentId=402087"
+    source_url: "https://irdai.gov.in/document-detail?documentId=402087"
+    verified: true
+
+  - id: mitra
+    name: "MITRA (Mutual Fund Investment Tracing and Retrieval Assistant), SEBI"
+    finds: ["mutual_fund"]
+    what: "Trace inactive and unclaimed mutual fund folios, including ones the family has no papers for."
+    have_ready: ["Name", "PAN of the deceased", "Other details the platform asks for"]
+    url: "https://www.sebi.gov.in/legal/circulars/feb-2025/service-platform-for-investors-to-trace-inactive-and-unclaimed-mutual-fund-folios-mitra-mutual-fund-investment-tracing-and-retrieval-assistant-_91847.html"
+    source_url: "https://www.sebi.gov.in/legal/circulars/feb-2025/service-platform-for-investors-to-trace-inactive-and-unclaimed-mutual-fund-folios-mitra-mutual-fund-investment-tracing-and-retrieval-assistant-_91847.html"
+    verified: true
+
+  - id: iepf
+    name: "IEPF Authority (Investor Education and Protection Fund)"
+    finds: ["demat_account"]
+    what: "Shares and dividends unclaimed for years move to IEPF. Legal heirs can claim them back with Form IEPF-5, after getting an entitlement letter from the company."
+    have_ready: ["Names of companies the deceased held shares in", "Folio or demat details, if known", "PAN of the claimant"]
+    url: "https://www.iepf.gov.in/"
+    source_url: "https://www.iepf.gov.in/content/iepf/global/master/Home/Home.html"
+    verified: true
+
+  - id: ais_legal_heir
+    name: "Annual Information Statement through legal heir registration, Income Tax Department"
+    finds: ["bank_account", "fixed_deposit", "demat_account", "mutual_fund", "epf"]
+    what: "After registering as legal heir, you can see the deceased's AIS: interest, dividends, salary and securities transactions reported by institutions."
+    have_ready: ["PAN of the deceased", "Death certificate", "Legal heir proof"]
+    url: "https://www.incometax.gov.in/iec/foportal/help/RegisterasLegalHeirUserManual"
+    source_url: "https://www.incometax.gov.in/iec/foportal/help/RegisterasLegalHeirUserManual"
+    verified: true
+
+  - id: epfo_uan
+    name: "EPFO member services"
+    finds: ["epf"]
+    what: "Past employers may each have an EPF account. The UAN links them. Ask each employer's HR for it."
+    have_ready: ["Employer names and years", "UAN or PF number, if found on salary slips"]
+    url: "https://www.epfindia.gov.in/"
+    source_url: "https://www.epfindia.gov.in/"
+    verified: false
+
+  - id: depository_cas
+    name: "Consolidated account statement from NSDL or CDSL"
+    finds: ["demat_account", "mutual_fund"]
+    what: "A consolidated statement lists demat holdings and mutual fund units across institutions linked to one PAN."
+    have_ready: ["PAN of the deceased", "Death certificate"]
+    url: "https://nsdl.co.in/"
+    source_url: "https://nsdl.co.in/"
+    verified: false
+
+  - id: credit_report
+    name: "Credit report from a credit bureau"
+    finds: ["home_loan", "personal_loan", "loan", "credit_card"]
+    what: "A credit report lists loans and credit cards in the deceased's name. Ask the bureau what it needs from a legal heir."
+    have_ready: ["PAN of the deceased", "Death certificate", "Legal heir proof"]
+    url: "https://www.rbi.org.in/"
+    source_url: "https://www.rbi.org.in/"
+    verified: false
