@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-26T11:24:41",
+  "generated_at": "2026-09-26T11:29:35",
   "persona": "Ramesh Kulkarni",
   "method": "Evidence-overlap match with same type family; see eval/score.py.",
   "runs": {
@@ -281,7 +281,145 @@
           "precision": 1.0
         }
       },
-      "seconds": 16.52,
+      "seconds": 43.41,
+      "provider": "ollama",
+      "model": "qwen2.5:7b"
+    },
+    "rules_plus_llm__llama3.2:3b": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "true_positives": 14,
+      "false_positives": 0,
+      "ground_truth_items": 14,
+      "exact_type_accuracy": 1.0,
+      "found": [
+        "GT01",
+        "GT02",
+        "GT03",
+        "GT04",
+        "GT05",
+        "GT06",
+        "GT07",
+        "GT08",
+        "GT09",
+        "GT10",
+        "GT11",
+        "GT12",
+        "GT13",
+        "GT14"
+      ],
+      "missed": [],
+      "false_positive_items": [],
+      "found_by_llm": [
+        "GT02",
+        "GT14"
+      ],
+      "closed_items": [
+        {
+          "id": "CL01",
+          "flagged_possibly_closed": true
+        }
+      ],
+      "items_debiting_after_death": 8,
+      "per_type": {
+        "cloud_storage": {
+          "truth": 1,
+          "found": 1,
+          "predicted": 1,
+          "correct": 1,
+          "recall": 1.0,
+          "precision": 1.0
+        },
+        "demat_account": {
+          "truth": 1,
+          "found": 1,
+          "predicted": 1,
+          "correct": 1,
+          "recall": 1.0,
+          "precision": 1.0
+        },
+        "epf": {
+          "truth": 1,
+          "found": 1,
+          "predicted": 1,
+          "correct": 1,
+          "recall": 1.0,
+          "precision": 1.0
+        },
+        "fixed_deposit": {
+          "truth": 1,
+          "found": 1,
+          "predicted": 1,
+          "correct": 1,
+          "recall": 1.0,
+          "precision": 1.0
+        },
+        "health_insurance": {
+          "truth": 1,
+          "found": 1,
+          "predicted": 1,
+          "correct": 1,
+          "recall": 1.0,
+          "precision": 1.0
+        },
+        "home_loan": {
+          "truth": 1,
+          "found": 1,
+          "predicted": 1,
+          "correct": 1,
+          "recall": 1.0,
+          "precision": 1.0
+        },
+        "life_insurance": {
+          "truth": 1,
+          "found": 1,
+          "predicted": 1,
+          "correct": 1,
+          "recall": 1.0,
+          "precision": 1.0
+        },
+        "mutual_fund": {
+          "truth": 2,
+          "found": 2,
+          "predicted": 3,
+          "correct": 2,
+          "recall": 1.0,
+          "precision": 0.667
+        },
+        "personal_loan": {
+          "truth": 1,
+          "found": 1,
+          "predicted": 1,
+          "correct": 1,
+          "recall": 1.0,
+          "precision": 1.0
+        },
+        "ppf": {
+          "truth": 1,
+          "found": 1,
+          "predicted": 1,
+          "correct": 1,
+          "recall": 1.0,
+          "precision": 1.0
+        },
+        "subscription": {
+          "truth": 2,
+          "found": 2,
+          "predicted": 2,
+          "correct": 2,
+          "recall": 1.0,
+          "precision": 1.0
+        },
+        "term_insurance": {
+          "truth": 1,
+          "found": 1,
+          "predicted": 1,
+          "correct": 1,
+          "recall": 1.0,
+          "precision": 1.0
+        }
+      },
+      "seconds": 2.36,
       "provider": "ollama",
       "model": "llama3.2:3b"
     }

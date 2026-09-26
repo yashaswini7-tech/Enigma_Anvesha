@@ -87,9 +87,10 @@ Discovery on the synthetic persona (the late Ramesh Kulkarni: 14 real items, plu
 | Run | Found | Recall | Precision | False positives | Missed | Closed SIP flagged |
 |---|---|---|---|---|---|---|
 | Rules only | 12/14 | 0.857 | 1.0 | 0 | GT02 term_insurance, GT14 subscription | yes |
+| Rules + LLM (ollama: `qwen2.5:7b`) | 14/14 | 1.0 | 1.0 | 0 | none | yes |
 | Rules + LLM (ollama: `llama3.2:3b`) | 14/14 | 1.0 | 1.0 | 0 | none | yes |
 
-_Generated 2026-09-26T11:24:41 by `eval/score.py`._
+_Generated 2026-09-26T11:29:35 by `eval/score.py`._
 <!-- metrics:end -->
 
 A predicted item counts as a true positive only when its evidence lines overlap the ground-truth item's lines and the type family matches (for example, term insurance vs life insurance is the same family). Duplicates count as false positives.
